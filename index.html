@@ -7,13 +7,42 @@
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
 
-    body {
+    /* Fullscreen styles */
+    html, body {
       margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
       overflow: hidden;
-      height: 100vh;
+    }
+
+    body {
       font-family: 'Poppins', sans-serif;
       background: linear-gradient(135deg, #0d3524 0%, #1e5c3e 30%, #2d8c5a 70%, #4ca771 100%);
       position: relative;
+    }
+
+    /* Fullscreen button */
+    .fullscreen-btn {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: rgba(255, 255, 255, 0.2);
+      border: 2px solid rgba(255, 255, 255, 0.5);
+      color: white;
+      padding: 10px 15px;
+      border-radius: 25px;
+      cursor: pointer;
+      z-index: 1000;
+      font-family: 'Poppins', sans-serif;
+      font-size: 14px;
+      backdrop-filter: blur(10px);
+      transition: all 0.3s ease;
+    }
+
+    .fullscreen-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: scale(1.05);
     }
 
     /* Animated gradient overlay */
@@ -242,6 +271,9 @@
 </head>
 <body>
 
+  <!-- Fullscreen Button -->
+  <button class="fullscreen-btn" onclick="toggleFullscreen()">⛶ Fullscreen</button>
+
   <!-- Background Elements -->
   <div class="gradient-overlay"></div>
   <div class="corner-decoration corner-top-left"></div>
@@ -304,6 +336,37 @@
 
     // Continuously create new particles
     setInterval(createParticle, 2000);
+
+    // Fullscreen functionality
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(err => {
+          console.log(`Error attempting to enable fullscreen: ${err.message}`);
+        });
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        }
+      }
+    }
+
+    // Listen for fullscreen change to update button text
+    document.addEventListener('fullscreenchange', function() {
+      const button = document.querySelector('.fullscreen-btn');
+      if (document.fullscreenElement) {
+        button.textContent = '⛶ Exit Fullscreen';
+      } else {
+        button.textContent = '⛶ Fullscreen';
+      }
+    });
+
+    // Also support F11 key for fullscreen
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'F11') {
+        e.preventDefault();
+        toggleFullscreen();
+      }
+    });
   </script>
 
   <!-- Firebase logic - NO OVERLAPPING WISHES -->
